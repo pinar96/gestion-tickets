@@ -60,7 +60,6 @@
     <script src="assets/js/tickets.js"></script>
 
     <script>
-        //incializar DataTable sin utilizar AJAX
         $(document).ready(function() {
             $('#ticketsTable').DataTable();
         });
