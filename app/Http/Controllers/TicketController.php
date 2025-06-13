@@ -125,43 +125,18 @@ class TicketController extends Controller
      */
     public function destroy($ticket_id)
     {
-        DB::beginTransaction();
         try {
             $ticket = Ticket::findOrFail($ticket_id);
             $ticket->delete();
-            DB::commit();
 
-            if (request()->expectsJson()) {
-                return response()->json([
-                    'message' => 'Ticket eliminado exitosamente!',
-                    'id' => $ticket->id,
-                ]);
-            }
-
-            // Si no es AJAX, redirecciona como siempre
-            $notification = [
-                'message' => 'Ticket #'. $ticket->id .' eliminado exitosamente!',
-                'alert-type' => 'success',
-                'timer' => 1500,
-                'showConfirmButton' => false
-            ];
-            return redirect()->route('tickets.index')->with($notification);
-
+            return response()->json([
+                'message' => 'Ticket #' . $ticket->id . ' eliminado exitosamente!',
+                'id' => $ticket->id,
+            ]);
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            if (request()->expectsJson()) {
-                return response()->json([
-                    'error' => 'Error al eliminar el ticket: ' . $e->getMessage(),
-                ], 500);
-            }
-
-            $notification = [
-                'message' => 'Error al eliminar el ticket: ' . $e->getMessage(),
-                'alert-type' => 'error',
-                'showConfirmButton' => true
-            ];
-            return redirect()->back()->withErrors($notification);
+            return response()->json([
+                'error' => 'Error al eliminar el ticket: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }
